@@ -10,6 +10,14 @@ public class Transform {
     
     public float rotation = 0f;
 
+    public Transform(float x, float y, float rotation, float scale ){
+        this.x = x;
+        this.y = y;
+
+        this.rotation = rotation;
+
+        this.scale = scale;
+    }
     public Matrix4f getMatrix(){
 
         return new Matrix4f()

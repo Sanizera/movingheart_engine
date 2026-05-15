@@ -37,7 +37,7 @@ import com.game.graphics.Mesh;
 import com.game.graphics.Renderer;
 import com.game.graphics.Shader;
 import com.game.objects.GameObject;
-import com.game.shapes.Heart;
+import com.game.shapes.PrimitiveFactory;
 
 public class Window {
 
@@ -118,14 +118,11 @@ public class Window {
 
         renderer = new Renderer(shader);
 
-        Heart heartData = new Heart();
+        
 
-        Mesh heartMesh = new Mesh(
-                heartData.verts,
-                heartData.inds
-        );
+        Mesh heartMesh = PrimitiveFactory.createHeart();
 
-        heart = new GameObject(heartMesh);
+        heart = GameObject.create(heartMesh, shader, 300, 300, 300);
 
     }
 
