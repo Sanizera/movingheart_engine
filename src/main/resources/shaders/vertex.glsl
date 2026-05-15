@@ -9,11 +9,30 @@ uniform vec2 offset;
 
 uniform float scale;
 
+uniform float rotation;
+
+
 void main()
 {
-    vec2 position = (aPos * scale) + offset;
+    vec2 scaled = aPos * scale;
 
-    gl_Position = vec4(position, 0.0, 1.0);
+    // rotation
+    float cosTheta = cos(rotation);
+    float sinTheta = sin(rotation);
+
+    vec2 rotated;
+
+    rotated.x =     
+        scaled.x * cosTheta - 
+        scaled.y * sinTheta;
+
+    rotated.y = 
+        scaled.x * sinTheta +
+        scaled.y * cosTheta;
+
+    vec2 finalPosition = rotated + offset;
+
+    gl_Position = vec4(finalPosition, 0.0, 1.0);
 
     vertexColor = aColor;
 }

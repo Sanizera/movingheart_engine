@@ -1,4 +1,4 @@
-package com.meujogo.graphics;
+package com.game.graphics;
 
 public class Camera {
     

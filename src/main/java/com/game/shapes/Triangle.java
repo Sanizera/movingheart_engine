@@ -1,4 +1,4 @@
-package com.meujogo.shapes;
+package com.game.shapes;
 
 public class Triangle {
     public float[] verts = {

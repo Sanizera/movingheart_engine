@@ -1,4 +1,4 @@
-package com.meujogo.core;
+package com.game.core;
 
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MAJOR;
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MINOR;
@@ -8,6 +8,8 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_E;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_Q;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_S;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_W;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_X;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_Z;
 import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_CORE_PROFILE;
 import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_PROFILE;
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
@@ -30,11 +32,11 @@ import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glViewport;
 
-import com.meujogo.graphics.Mesh;
-import com.meujogo.graphics.Renderer;
-import com.meujogo.graphics.Shader;
-import com.meujogo.objects.GameObject;
-import com.meujogo.shapes.Heart;
+import com.game.graphics.Mesh;
+import com.game.graphics.Renderer;
+import com.game.graphics.Shader;
+import com.game.objects.GameObject;
+import com.game.shapes.Heart;
 
 public class Window {
 
@@ -184,6 +186,14 @@ public class Window {
 
         if(glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS){
             heart.transform.scale -= 1f * deltaTime;
+        }
+
+        if(glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS){
+            heart.transform.rotation += 1f * deltaTime;
+        }
+
+        if(glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS){
+            heart.transform.rotation -= 1f * deltaTime;
         }
 
     }

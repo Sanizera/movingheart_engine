@@ -1,6 +1,6 @@
-package com.meujogo;
+package com.game;
 
-import com.meujogo.core.Window;
+import com.game.core.Window;
 
 public class Main {
 

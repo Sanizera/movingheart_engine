@@ -1,6 +1,6 @@
-package com.meujogo.graphics;
+package com.game.graphics;
 
-import com.meujogo.objects.GameObject;
+import com.game.objects.GameObject;
 
 public class Renderer {
     
@@ -18,6 +18,11 @@ public class Renderer {
         shader.setFloat(
             "scale",
             obj.transform.scale
+        );
+
+        shader.setFloat(
+            "rotation",
+            obj.transform.rotation
         );
 
         obj.mesh.render();

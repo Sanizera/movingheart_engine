@@ -1,6 +1,6 @@
-package com.meujogo.objects;
+package com.game.objects;
 
-import com.meujogo.graphics.Mesh;
+import com.game.graphics.Mesh;
 
 public class GameObject {
     

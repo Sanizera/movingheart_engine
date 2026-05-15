@@ -1,6 +1,6 @@
-package com.meujogo.shapes;
+package com.game.shapes;
 
-import com.meujogo.objects.Transform;
+import com.game.objects.Transform;
 
 public class Heart {
     public Transform transform = new Transform();
