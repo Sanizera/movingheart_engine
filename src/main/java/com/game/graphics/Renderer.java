@@ -13,17 +13,8 @@ public class Renderer {
     public void render (GameObject obj){
         shader.use();
 
-        shader.setVec2("offset", obj.transform.x, obj.transform.y);
+        shader.setMat4("transform", obj.transform.getMatrix());
 
-        shader.setFloat(
-            "scale",
-            obj.transform.scale
-        );
-
-        shader.setFloat(
-            "rotation",
-            obj.transform.rotation
-        );
 
         obj.mesh.render();
     }

@@ -1,7 +1,9 @@
 package com.game.graphics;
 
 import java.io.IOException;
+import java.nio.FloatBuffer;
 
+import org.joml.Matrix4f;
 import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL20.GL_COMPILE_STATUS;
 import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
@@ -21,7 +23,9 @@ import static org.lwjgl.opengl.GL20.glLinkProgram;
 import static org.lwjgl.opengl.GL20.glShaderSource;
 import static org.lwjgl.opengl.GL20.glUniform1f;
 import static org.lwjgl.opengl.GL20.glUniform2f;
+import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 import static org.lwjgl.opengl.GL20.glUseProgram;
+import org.lwjgl.system.MemoryStack;
 
 public class Shader {
     private int programId;
@@ -124,6 +128,20 @@ public class Shader {
         return programId;
     }
 
+    public void setMat4(String name, Matrix4f matrix){
+        try(
+            MemoryStack stack = MemoryStack.stackPush();
+        ){
+
+            FloatBuffer buffer = stack.mallocFloat(16);
+
+            matrix.get(buffer);
+
+            int location = glGetUniformLocation(programId, name);
+
+            glUniformMatrix4fv(location, false, buffer);
+        }
+    }
     public void setVec2(String name, float x, float y){
         int location = glGetUniformLocation(programId, name);
 
