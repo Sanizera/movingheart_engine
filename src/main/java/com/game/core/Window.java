@@ -1,5 +1,6 @@
 package com.game.core;
 
+import org.joml.Matrix4f;
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MAJOR;
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MINOR;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_A;
@@ -48,16 +49,15 @@ public class Window {
     private long window;
 
     // tempo
-    
     private float deltaTime = 0f;
     private float lastFrame = 0f;
 
     // renderização
-
     private Shader shader;
 
     private Renderer renderer;
 
+    private Matrix4f projection;
     // objetos 
 
     private GameObject heart;
@@ -79,7 +79,7 @@ public class Window {
     }
 
     private void init() {
-    
+
         if (!glfwInit()) {
             throw new IllegalStateException(
                     "Falha ao iniciar GLFW"
@@ -111,29 +111,23 @@ public class Window {
         GL.createCapabilities();
 
         glViewport(0, 0, width, height);
-        
+
         shader = new Shader("shaders/vertex.glsl", "shaders/fragment.glsl");
 
+        projection = new Matrix4f().ortho(0f, width, height, 0f, -1f, 1f);
 
         renderer = new Renderer(shader);
 
         Heart heartData = new Heart();
 
         Mesh heartMesh = new Mesh(
-            heartData.verts,
-            heartData.inds
+                heartData.verts,
+                heartData.inds
         );
-        
+
         heart = new GameObject(heartMesh);
 
-        heart.transform.x = 0f;
-
-        heart.transform.y = 0f;
-
-        heart.transform.scale = 1f;
     }
-
-    
 
     private void loop() {
 
@@ -145,60 +139,65 @@ public class Window {
 
             render();
 
+            shader.setMat4("projection", projection);
+
             glfwPollEvents();
         }
     }
-    private void updateTime(){
+
+    private void updateTime() {
         float currentFrame = (float) glfwGetTime();
 
         deltaTime = currentFrame - lastFrame;
 
         lastFrame = currentFrame;
     }
+
     private void destroy() {
 
         glfwDestroyWindow(window);
 
         glfwTerminate();
     }
-    private void input(){
-        float speed = 2f;
 
-        if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS){
-            heart.transform.y +=  speed * deltaTime;
-        }
-        
-        if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS){
-            heart.transform.y -=  speed * deltaTime;
+    private void input() {
+        float speed = 1000f;
+
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+            heart.transform.y -= speed * deltaTime;
         }
 
-        if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS){
-            heart.transform.x -=  speed * deltaTime;
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+            heart.transform.y += speed * deltaTime;
         }
 
-        if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS){
-            heart.transform.x +=  speed * deltaTime;
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+            heart.transform.x -= speed * deltaTime;
         }
 
-        if(glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS){
-            heart.transform.scale += 1f * deltaTime;
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+            heart.transform.x += speed * deltaTime;
         }
 
-        if(glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS){
-            heart.transform.scale -= 1f * deltaTime;
+        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
+            heart.transform.scale += 100f * deltaTime;
         }
 
-        if(glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS){
-            heart.transform.rotation += 1f * deltaTime;
+        if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
+            heart.transform.scale -= 100f * deltaTime;
         }
 
-        if(glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS){
-            heart.transform.rotation -= 1f * deltaTime;
+        if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
+            heart.transform.rotation -= 3f * deltaTime;
+        }
+
+        if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
+            heart.transform.rotation += 3f * deltaTime;
         }
 
     }
 
-    private void render(){
+    private void render() {
         glClearColor(0f, 0f, 0f, 1f);
 
         glClear(GL_COLOR_BUFFER_BIT);
