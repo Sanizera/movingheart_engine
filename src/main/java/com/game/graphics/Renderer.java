@@ -15,7 +15,6 @@ public class Renderer {
 
         shader.setMat4("transform", obj.transform.getMatrix());
         
-
         obj.mesh.render();
     }
 }

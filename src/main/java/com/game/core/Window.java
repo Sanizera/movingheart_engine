@@ -6,6 +6,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MINOR;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_A;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_D;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_E;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_F;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_Q;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_S;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_W;
@@ -33,6 +34,7 @@ import static org.lwjgl.opengl.GL11.glClear;
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glViewport;
 
+import com.game.graphics.Camera2D;
 import com.game.graphics.Mesh;
 import com.game.graphics.Renderer;
 import com.game.graphics.Shader;
@@ -58,6 +60,8 @@ public class Window {
     private Renderer renderer;
 
     private Matrix4f projection;
+
+    private Matrix4f view;
     // objetos 
 
     private GameObject heart;
@@ -118,6 +122,9 @@ public class Window {
 
         renderer = new Renderer(shader);
 
+        Camera2D camera = new Camera2D();
+
+        view = camera.getViewMatrix();
         
 
         Mesh heartMesh = PrimitiveFactory.createHeart();
@@ -137,6 +144,8 @@ public class Window {
             render();
 
             shader.setMat4("projection", projection);
+
+            shader.setMat4("view", view);
 
             glfwPollEvents();
         }
@@ -159,38 +168,41 @@ public class Window {
 
     private void input() {
         float speed = 1000f;
-
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-            heart.transform.y -= speed * deltaTime;
+            heart.transform.position.y -= speed * deltaTime;
         }
-
+        
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-            heart.transform.y += speed * deltaTime;
+            heart.transform.position.y += speed * deltaTime;
         }
-
+        
         if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-            heart.transform.x -= speed * deltaTime;
+            heart.transform.position.x -= speed * deltaTime;
         }
 
         if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-            heart.transform.x += speed * deltaTime;
+            heart.transform.position.x += speed * deltaTime;
         }
 
         if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
-            heart.transform.scale += 100f * deltaTime;
+            heart.transform.scale.x += 100f * deltaTime;
         }
 
         if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
-            heart.transform.scale -= 100f * deltaTime;
+            heart.transform.scale.y += 100f * deltaTime;
         }
-
+        if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
+            heart.transform.scale.x -= 100f* deltaTime;
+            heart.transform.scale.y -= 100f* deltaTime;
+        }
         if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
             heart.transform.rotation -= 3f * deltaTime;
         }
-
+        
         if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
             heart.transform.rotation += 3f * deltaTime;
         }
+        
 
     }
 
