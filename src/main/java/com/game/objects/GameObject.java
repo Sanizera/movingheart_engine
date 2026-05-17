@@ -1,27 +1,41 @@
 package com.game.objects;
 
-import com.game.graphics.Mesh;
-import com.game.graphics.Shader;
-
+import java.util.ArrayList;
+import java.util.List;
 public class GameObject {
-    public Mesh mesh;
-    public Shader shader;
+    
     public Transform transform;
+    private List<Component> components;
+    public GameObject(){
+        transform = new Transform();
 
-    public static GameObject create(
-        Mesh mesh,
-        Shader shader,
-        float x,
-        float  y,
-        float scale
-    ){
-        return new GameObject(mesh , shader, new Transform(x, y, 0f , scale));
+        components = new ArrayList<>();
+
     }
 
+    public void addComponent(Component c){
+        c.gameObject = this;
+        components.add(c);
+    }
+    public <T extends Component> T getComponent(Class<T> type){
+        for(Component c: components){
+            if (type.isInstance(c)){
+                
+                return type.cast(c);
+            }
+        }
+        return null;
+    }
 
-    public GameObject(Mesh mesh, Shader shader, Transform transform){
-        this.mesh = mesh;
-        this.shader = shader;
-        this.transform = transform;
+    public void update(float deltaTime){
+        for(Component c: components){
+            c.update(deltaTime);
+        }
+    }
+
+    public void render(){
+        for(Component c : components){
+            c.render();
+        }
     }
 }
