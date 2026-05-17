@@ -1,23 +1,13 @@
 package com.game.core;
 
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MAJOR;
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MINOR;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_A;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_D;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_E;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_F;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_Q;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_S;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_W;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_X;
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_Z;
 import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_CORE_PROFILE;
 import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_PROFILE;
-import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.glfwCreateWindow;
 import static org.lwjgl.glfw.GLFW.glfwDestroyWindow;
-import static org.lwjgl.glfw.GLFW.glfwGetKey;
 import static org.lwjgl.glfw.GLFW.glfwGetTime;
 import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
@@ -29,16 +19,17 @@ import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import static org.lwjgl.glfw.GLFW.glfwWindowHint;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 import org.lwjgl.opengl.GL;
-import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
-import static org.lwjgl.opengl.GL11.glClear;
-import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glViewport;
 
 import com.game.graphics.Camera2D;
 import com.game.graphics.Mesh;
 import com.game.graphics.Renderer;
 import com.game.graphics.Shader;
+import com.game.graphics.SpriteRenderer;
+import com.game.graphics.Texture;
 import com.game.objects.GameObject;
+import com.game.objects.Input;
+import com.game.objects.PlayerController;
 import com.game.shapes.PrimitiveFactory;
 
 public class Window {
@@ -59,12 +50,18 @@ public class Window {
 
     private Renderer renderer;
 
+    private Camera2D camera;
+
     private Matrix4f projection;
 
-    private Matrix4f view;
+
+
+    private Texture texture;    
     // objetos 
 
-    private GameObject heart;
+    private GameObject player;
+
+    private Input input;
 
     public Window(int width, int height, String title) {
         this.width = width;
@@ -120,32 +117,42 @@ public class Window {
 
         projection = new Matrix4f().ortho(0f, width, height, 0f, -1f, 1f);
 
-        renderer = new Renderer(shader);
+        renderer = new Renderer(shader, projection);
 
-        Camera2D camera = new Camera2D();
+        texture = new Texture("src/main/resources/textures/heart.png");
 
-        view = camera.getViewMatrix();
-        
 
-        Mesh heartMesh = PrimitiveFactory.createHeart();
+        camera = new Camera2D();
 
-        heart = GameObject.create(heartMesh, shader, 300, 300, 300);
+        input.init(window);
+
+        Mesh quad = PrimitiveFactory.createQuad();
+
+        player = new GameObject();
+
+        player.transform.scale = new Vector2f(200f, 200f);
+
+        player.addComponent(
+            new SpriteRenderer(quad, shader, texture)
+        );
+        player.addComponent(new PlayerController());
 
     }
 
     private void loop() {
 
         while (!glfwWindowShouldClose(window)) {
-
             updateTime();
 
-            input();
+            renderer.begin(camera);
 
-            render();
+            player.update(deltaTime);
+            
+            player.render();
+            
+            renderer.end();
 
-            shader.setMat4("projection", projection);
-
-            shader.setMat4("view", view);
+            glfwSwapBuffers(window);
 
             glfwPollEvents();
         }
@@ -166,53 +173,7 @@ public class Window {
         glfwTerminate();
     }
 
-    private void input() {
-        float speed = 1000f;
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-            heart.transform.position.y -= speed * deltaTime;
-        }
-        
-        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-            heart.transform.position.y += speed * deltaTime;
-        }
-        
-        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-            heart.transform.position.x -= speed * deltaTime;
-        }
+    
 
-        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-            heart.transform.position.x += speed * deltaTime;
-        }
-
-        if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
-            heart.transform.scale.x += 100f * deltaTime;
-        }
-
-        if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
-            heart.transform.scale.y += 100f * deltaTime;
-        }
-        if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
-            heart.transform.scale.x -= 100f* deltaTime;
-            heart.transform.scale.y -= 100f* deltaTime;
-        }
-        if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
-            heart.transform.rotation -= 3f * deltaTime;
-        }
-        
-        if (glfwGetKey(window, GLFW_KEY_X) == GLFW_PRESS) {
-            heart.transform.rotation += 3f * deltaTime;
-        }
-        
-
-    }
-
-    private void render() {
-        glClearColor(0f, 0f, 0f, 1f);
-
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        renderer.render(heart);
-
-        glfwSwapBuffers(window);
-    }
+   
 }

@@ -55,19 +55,19 @@ public class Mesh {
                 2,
                 GL_FLOAT,
                 false,
-                5 * Float.BYTES,
-                0L
+                4 * Float.BYTES,
+                0
         );
 
         glEnableVertexAttribArray(0);
 
         glVertexAttribPointer(
             1,
-            3,
+            2,
             GL_FLOAT,
             false,
-            5 * Float.BYTES,
-            2L * Float.BYTES
+            4 * Float.BYTES,
+            2 * Float.BYTES
         );
 
         glEnableVertexAttribArray(1);

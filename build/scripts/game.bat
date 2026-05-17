@@ -19,7 +19,7 @@
 @if "%DEBUG%"=="" @echo off
 @rem ##########################################################################
 @rem
-@rem  meu-jogo startup script for Windows
+@rem  game startup script for Windows
 @rem
 @rem ##########################################################################
 

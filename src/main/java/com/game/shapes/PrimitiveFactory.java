@@ -6,14 +6,13 @@ public class PrimitiveFactory {
 
     public static Mesh createHeart() {
         float[] verts = {
-        //     x     y           color
-            -0.5f, 0.0f,    1.0f, 0.0f, 0f,
-            -0.25f, -0.5f,   1.0f, 0.0f, 0f,
-            0.0f, 0.0f,     1.0f, 0.0f, 0f,
-            0.25f, -0.5f,    1.0f, 0.0f, 0f,
-            0.5f, 0.0f,     1.0f, 0.0f, 0f,
-            0.0f, 0.75f,   1.0f, 0.0f, 0f,
-        };
+            //     x     y           color
+            -0.5f, 0.0f, 1.0f, 0.0f, 0f,
+            -0.25f, -0.5f, 1.0f, 0.0f, 0f,
+            0.0f, 0.0f, 1.0f, 0.0f, 0f,
+            0.25f, -0.5f, 1.0f, 0.0f, 0f,
+            0.5f, 0.0f, 1.0f, 0.0f, 0f,
+            0.0f, 0.75f, 1.0f, 0.0f, 0f,};
 
         int[] inds = {
             0, 1, 2,
@@ -24,12 +23,12 @@ public class PrimitiveFactory {
         return new Mesh(verts, inds);
     }
 
-    public static Mesh createSquare(){
+    public static Mesh createSquare() {
         float[] verts = {
-            -0.5f, -0.5f,   1f, 0f, 0f,
-             0.5f, -0.5f,   1f, 0f, 0f,   
-             0.5f, 0.5f,    1f, 0f, 0f,
-            -0.5f, 0.5f,     1f, 0f, 0f
+            -0.5f, -0.5f, 1f, 0f, 0f,
+            0.5f, -0.5f, 1f, 0f, 0f,
+            0.5f, 0.5f, 1f, 0f, 0f,
+            -0.5f, 0.5f, 1f, 0f, 0f
         };
 
         int[] inds = {
@@ -40,17 +39,24 @@ public class PrimitiveFactory {
         return new Mesh(verts, inds);
     }
 
-    public static Mesh createTriangle(){
+    public static Mesh createTriangle() {
         float[] verts = {
-        -0.5f, -0.5f,   1f, 0f, 0f,
-        0.5f, -0.5f,    1f, 0f, 0f,
-        0.0f, 0.5f,      1f, 0f, 0f
+            -0.5f, -0.5f, 1f, 0f, 0f,
+            0.5f, -0.5f, 1f, 0f, 0f,
+            0.0f, 0.5f, 1f, 0f, 0f
         };
 
-        int [] inds = {
-        0, 1, 2
+        int[] inds = {
+            0, 1, 2
         };
 
         return new Mesh(verts, inds);
+    }
+
+    public static Mesh createQuad() {
+        Quad quad = new Quad();
+
+
+        return new Mesh(quad.verts, quad.inds);
     }
 }
