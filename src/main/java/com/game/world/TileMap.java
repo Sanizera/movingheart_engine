@@ -46,9 +46,18 @@ public class TileMap {
 
                 if (tile == null) continue;
 
-                float worldX = x * tileSize;
+                float mapWidth = width * tileSize;
 
-                float worldY = y * tileSize;
+                float mapHeight = height * tileSize;
+                
+
+                float startX = -mapWidth/2f + tileSize/2f;
+
+                float startY = -mapHeight/2f + tileSize/2f;
+
+                float worldX = startX + x * tileSize;
+
+                float worldY = startY + y * tileSize;
 
                 Matrix4f transform = new Matrix4f()
                 .translate(worldX, worldY, 0f)

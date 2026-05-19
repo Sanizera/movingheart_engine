@@ -72,8 +72,6 @@ public class Window {
 
     private TileMap map;
 
-    private Input input;
-
     public Window(int width, int height, String title) {
         this.width = width;
         this.height = height;
@@ -132,18 +130,18 @@ public class Window {
         
         shader = new Shader("shaders/vertex.glsl", "shaders/fragment.glsl");
         
-        projection = new Matrix4f().ortho(0, width, height, 0 , -1f, 1f);
+        projection = new Matrix4f().ortho(-width/2f , width/2f , height/2f , -height/2f , -1f , 1f);
         
         renderer = new Renderer(shader, projection);
 
         glfwSetFramebufferSizeCallback(window, (window, w, h) -> {
             width = w;
             height = h;
-
+            
             glViewport(0, 0, w, h);
 
             projection = new Matrix4f()
-            .ortho(0f, w, h, 0f, -1f, 1f);
+            .ortho(-w/2f, w/2f, h/2f, -h/2f, -1f, 1f);
 
             renderer.setProjection(
                 projection
@@ -156,20 +154,20 @@ public class Window {
 
         camera = new Camera2D();
 
-        input = new Input();
-
-        input.init(window);
+        Input.init(window);
 
         Mesh quad = PrimitiveFactory.createQuad();
 
         grass = new Tile(tileTexture);
 
-   
+        int mapWidth = 200;
 
-        map = new TileMap(30,   16, 64, quad, shader);
+        int mapHeight = 200;
 
-        for (int y = 0; y < 16; y++) {
-            for (int x = 0; x < 30; x++) {
+        map = new TileMap(mapWidth, mapHeight, 64, quad, shader);
+
+        for (int y = 0; y < mapHeight; y++) {
+            for (int x = 0; x < mapWidth; x++) {
                 map.setTile(x, y, grass);
             }
         }   
@@ -195,6 +193,8 @@ public class Window {
             map.renderMap();
             
             player.update(deltaTime);
+
+            camera.position.lerp(player.transform.position, 6f * deltaTime); 
 
             player.render();
 
