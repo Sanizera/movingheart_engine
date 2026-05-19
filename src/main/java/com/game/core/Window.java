@@ -132,7 +132,7 @@ public class Window {
         
         shader = new Shader("shaders/vertex.glsl", "shaders/fragment.glsl");
         
-        projection = new Matrix4f().ortho(-width/2f, width/2f, height/2f, -height/2f , -1f, 1f);
+        projection = new Matrix4f().ortho(0, width, height, 0 , -1f, 1f);
         
         renderer = new Renderer(shader, projection);
 
