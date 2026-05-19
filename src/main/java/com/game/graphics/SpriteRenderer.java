@@ -15,15 +15,16 @@ public class SpriteRenderer extends Component {
         this.texture = texture;
     }
 
-    @Override
-    public void render() {
-        shader.use();
 
-        shader.setMat4("transform", gameObject.transform.getMatrix());
+    public Shader getShader(){
+        return shader;
+    }
 
-        texture.bind();
+    public Mesh getMesh(){
+        return mesh;
+    }
 
-        mesh.render();
-   
+    public Texture getTexture(){
+        return texture;
     }
 }

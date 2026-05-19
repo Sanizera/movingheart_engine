@@ -1,7 +1,6 @@
 package com.game.core;
 
 import org.joml.Matrix4f;
-import org.joml.Vector2f;
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MAJOR;
 import static org.lwjgl.glfw.GLFW.GLFW_CONTEXT_VERSION_MINOR;
 import static org.lwjgl.glfw.GLFW.GLFW_OPENGL_CORE_PROFILE;
@@ -27,18 +26,9 @@ import static org.lwjgl.opengl.GL11.glBlendFunc;
 import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glViewport;
 
-import com.game.graphics.Camera2D;
-import com.game.graphics.Mesh;
 import com.game.graphics.Renderer;
-import com.game.graphics.Shader;
-import com.game.graphics.SpriteRenderer;
-import com.game.graphics.Texture;
-import com.game.objects.GameObject;
-import com.game.objects.Input;
-import com.game.objects.PlayerController;
-import com.game.shapes.PrimitiveFactory;
-import com.game.world.Tile;
-import com.game.world.TileMap;
+import com.game.input.Input;
+import com.game.scenes.MainScene;
 
 public class Window {
 
@@ -49,28 +39,14 @@ public class Window {
 
     private long window;
 
-    // tempo
-    private float deltaTime = 0f;
-    private float lastFrame = 0f;
-
-    // renderização
-    private Shader shader;
+    private Matrix4f projection;
 
     private Renderer renderer;
 
-    private Camera2D camera;
+    private Scene currentScene;
 
-    private Matrix4f projection;
-
-    private Texture playerTexture;
-
-    private Texture tileTexture;
-    // objetos 
-    private Tile grass;
-
-    private GameObject player;
-
-    private TileMap map;
+    private float deltaTime = 0f;
+    private float lastFrame = 0f;
 
     public Window(int width, int height, String title) {
         this.width = width;
@@ -95,92 +71,61 @@ public class Window {
                     "Falha ao iniciar GLFW"
             );
         }
-        
+
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-        
+
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        
+
         glfwWindowHint(
-            GLFW_OPENGL_PROFILE,
-            GLFW_OPENGL_CORE_PROFILE
+                GLFW_OPENGL_PROFILE,
+                GLFW_OPENGL_CORE_PROFILE
         );
-        
+
         window = glfwCreateWindow(width, height, title, 0, 0);
-        
+
         if (window == 0) {
             throw new RuntimeException(
-                "Falha ao criar janela"
+                    "Falha ao criar janela"
             );
         }
-        
+
         glfwMakeContextCurrent(window);
-        
+
         glfwSwapInterval(1);
-        
+
         glfwShowWindow(window);
-        
+
         GL.createCapabilities();
-        
+
         glViewport(0, 0, width, height);
-        
+
         glEnable(GL_BLEND);
-        
+
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
         
-        shader = new Shader("shaders/vertex.glsl", "shaders/fragment.glsl");
+        projection = new Matrix4f().ortho(-width / 2f, width / 2f, height / 2f, -height / 2f, -1f, 1f);
         
-        projection = new Matrix4f().ortho(-width/2f , width/2f , height/2f , -height/2f , -1f , 1f);
-        
-        renderer = new Renderer(shader, projection);
-
         glfwSetFramebufferSizeCallback(window, (window, w, h) -> {
             width = w;
             height = h;
             
             glViewport(0, 0, w, h);
-
+            
             projection = new Matrix4f()
-            .ortho(-w/2f, w/2f, h/2f, -h/2f, -1f, 1f);
-
+            .ortho(-w / 2f, w / 2f, h / 2f, -h / 2f, -1f, 1f);
+            
             renderer.setProjection(
                 projection
             );
         });
-
-        playerTexture = new Texture("src/main/resources/textures/heart.png");
-
-        tileTexture = new Texture("src/main/resources/textures/grassTile.png");
-
-        camera = new Camera2D();
+        
+        renderer = new Renderer(projection);
+        
+        currentScene = new MainScene(renderer);
 
         Input.init(window);
 
-        Mesh quad = PrimitiveFactory.createQuad();
-
-        grass = new Tile(tileTexture);
-
-        int mapWidth = 200;
-
-        int mapHeight = 200;
-
-        map = new TileMap(mapWidth, mapHeight, 64, quad, shader);
-
-        for (int y = 0; y < mapHeight; y++) {
-            for (int x = 0; x < mapWidth; x++) {
-                map.setTile(x, y, grass);
-            }
-        }   
-
-        player = new GameObject();
-
-        player.transform.scale = new Vector2f(64f, 64f);
-
-        player.addComponent(
-                new SpriteRenderer(quad, shader, playerTexture)
-        );
-        player.addComponent(new PlayerController());
-
+        currentScene.init();
     }
 
     private void loop() {
@@ -188,17 +133,9 @@ public class Window {
         while (!glfwWindowShouldClose(window)) {
             updateTime();
 
-            renderer.begin(camera);
+            currentScene.update(deltaTime);
 
-            map.renderMap();
-            
-            player.update(deltaTime);
-
-            camera.position.lerp(player.transform.position, 6f * deltaTime); 
-
-            player.render();
-
-            renderer.end();
+            currentScene.render();
 
             glfwSwapBuffers(window);
 

@@ -6,7 +6,5 @@ public abstract class Component {
 
     public void update(float deltaTime){}
 
-    public void render(){
-        
-    }
+
 }

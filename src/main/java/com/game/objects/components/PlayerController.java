@@ -1,9 +1,12 @@
-package com.game.objects;
+package com.game.objects.components;
 
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_A;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_D;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_S;
 import static org.lwjgl.glfw.GLFW.GLFW_KEY_W;
+
+import com.game.input.Input;
+import com.game.objects.Component;
 
 public class PlayerController extends Component {
 
