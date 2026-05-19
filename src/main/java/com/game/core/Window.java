@@ -103,7 +103,7 @@ public class Window {
 
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         
-        projection = createProjection(height, width);
+        projection = new Matrix4f().ortho(-width / 2f, width / 2f, height / 2f, -height / 2f, -1f, 1f);
         
         glfwSetFramebufferSizeCallback(window, (window, w, h) -> {
             width = w;
@@ -111,7 +111,8 @@ public class Window {
             
             glViewport(0, 0, w, h);
             
-            projection = createProjection(w, h);
+            projection = new Matrix4f()
+            .ortho(-w / 2f, w / 2f, h / 2f, -h / 2f, -1f, 1f);
             
             renderer.setProjection(
                 projection
@@ -157,7 +158,4 @@ public class Window {
         glfwTerminate();
     }
 
-    private Matrix4f createProjection(int height, int width){
-        return new Matrix4f().ortho(-width / 2f, width / 2f, height / 2f, -height / 2f, -1f, 1f);
-    }
 }

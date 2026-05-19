@@ -20,6 +20,8 @@ public class TileMap {
 
     private Shader shader;
 
+    private Matrix4f tileTransform = new Matrix4f();
+
     public TileMap(int width, int height, int tileSize, Mesh quad, Shader shader) {
         this.width = width;
 
@@ -42,7 +44,7 @@ public class TileMap {
         float mapWidth = width * tileSize;
 
         float mapHeight = height * tileSize;
-        
+
         float startX = -mapWidth / 2f + tileSize / 2f;
 
         float startY = -mapHeight / 2f + tileSize / 2f;
@@ -59,11 +61,13 @@ public class TileMap {
 
                 float worldY = startY + y * tileSize;
 
-                Matrix4f transform = new Matrix4f()
-                        .translate(worldX, worldY, 0f)
-                        .scale(tileSize);
+                tileTransform.identity();
+                tileTransform
+                    .translate(worldX, worldY, 0f)
+                    .scale(tileSize)
+                ;
 
-                renderer.drawSprite(quad, shader, tile.texture, transform);
+                renderer.drawSprite(quad, shader, tile.texture, tileTransform);
             }
         }
     }

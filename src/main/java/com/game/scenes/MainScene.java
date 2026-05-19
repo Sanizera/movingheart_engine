@@ -50,8 +50,8 @@ public class MainScene extends Scene{
 
         camera = new Camera2D();
 
-        int mapWidth = 200;
-        int mapHeight = 200;
+        int mapWidth = 50;
+        int mapHeight = 50;
         
         map = new TileMap(mapWidth, mapHeight, grass.tileSize, quad, shader);
         
@@ -61,18 +61,20 @@ public class MainScene extends Scene{
             }   
         }
 
-        playerTex = new Texture("heart.png");
+        playerTex = new Texture("joaquim.png");
         player = new GameObject();
         player.addComponent(new PlayerController());
         player.addComponent(new SpriteRenderer(quad, shader, playerTex));
         
-        player.transform.scale = new Vector2f(64f, 64f);
+        player.transform.scale = new Vector2f(256f, 256f);
 
+        
     }
 
     @Override
     public void update(float deltaTime) {
         player.update(deltaTime);
+        camera.position.lerp(player.transform.position, 5f*deltaTime); 
     }
 
     @Override
