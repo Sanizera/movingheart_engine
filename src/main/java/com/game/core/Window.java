@@ -19,6 +19,11 @@ import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import static org.lwjgl.glfw.GLFW.glfwWindowHint;
 import static org.lwjgl.glfw.GLFW.glfwWindowShouldClose;
 import org.lwjgl.opengl.GL;
+import static org.lwjgl.opengl.GL11.GL_BLEND;
+import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
+import static org.lwjgl.opengl.GL11.glBlendFunc;
+import static org.lwjgl.opengl.GL11.glEnable;
 import static org.lwjgl.opengl.GL11.glViewport;
 
 import com.game.graphics.Camera2D;
@@ -31,6 +36,8 @@ import com.game.objects.GameObject;
 import com.game.objects.Input;
 import com.game.objects.PlayerController;
 import com.game.shapes.PrimitiveFactory;
+import com.game.world.Tile;
+import com.game.world.TileMap;
 
 public class Window {
 
@@ -54,12 +61,15 @@ public class Window {
 
     private Matrix4f projection;
 
+    private Texture playerTexture;
 
-
-    private Texture texture;    
+    private Texture tileTexture;
     // objetos 
+    private Tile grass;
 
     private GameObject player;
+
+    private TileMap map;
 
     private Input input;
 
@@ -86,41 +96,47 @@ public class Window {
                     "Falha ao iniciar GLFW"
             );
         }
+        
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-
+        
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-
+        
         glfwWindowHint(
-                GLFW_OPENGL_PROFILE,
-                GLFW_OPENGL_CORE_PROFILE
+            GLFW_OPENGL_PROFILE,
+            GLFW_OPENGL_CORE_PROFILE
         );
-
+        
         window = glfwCreateWindow(width, height, title, 0, 0);
-
+        
         if (window == 0) {
             throw new RuntimeException(
-                    "Falha ao criar janela"
+                "Falha ao criar janela"
             );
         }
-
+        
         glfwMakeContextCurrent(window);
-
+        
         glfwSwapInterval(1);
-
+        
         glfwShowWindow(window);
-
+        
         GL.createCapabilities();
-
+        
         glViewport(0, 0, width, height);
+        
+        glEnable(GL_BLEND);
 
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        
         shader = new Shader("shaders/vertex.glsl", "shaders/fragment.glsl");
 
         projection = new Matrix4f().ortho(0f, width, height, 0f, -1f, 1f);
 
         renderer = new Renderer(shader, projection);
 
-        texture = new Texture("src/main/resources/textures/heart.png");
+        playerTexture = new Texture("src/main/resources/textures/heart.png");
 
+        tileTexture = new Texture("src/main/resources/textures/grassTile.png");
 
         camera = new Camera2D();
 
@@ -128,12 +144,24 @@ public class Window {
 
         Mesh quad = PrimitiveFactory.createQuad();
 
+        grass = new Tile(tileTexture);
+
+   
+
+        map = new TileMap(20, 12, 64, quad, shader);
+
+        for (int y = 0; y < 12; y++) {
+            for (int x = 0; x < 20; x++) {
+                map.setTile(x, y, grass);
+            }
+        }   
+
         player = new GameObject();
 
-        player.transform.scale = new Vector2f(200f, 200f);
+        player.transform.scale = new Vector2f(64f, 64f);
 
         player.addComponent(
-            new SpriteRenderer(quad, shader, texture)
+                new SpriteRenderer(quad, shader, playerTexture)
         );
         player.addComponent(new PlayerController());
 
@@ -146,10 +174,12 @@ public class Window {
 
             renderer.begin(camera);
 
+            map.renderMap();
+            
             player.update(deltaTime);
-            
+
             player.render();
-            
+
             renderer.end();
 
             glfwSwapBuffers(window);
@@ -173,7 +203,4 @@ public class Window {
         glfwTerminate();
     }
 
-    
-
-   
 }
