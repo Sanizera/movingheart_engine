@@ -12,6 +12,7 @@ import static org.lwjgl.glfw.GLFW.glfwGetTime;
 import static org.lwjgl.glfw.GLFW.glfwInit;
 import static org.lwjgl.glfw.GLFW.glfwMakeContextCurrent;
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
+import static org.lwjgl.glfw.GLFW.glfwSetFramebufferSizeCallback;
 import static org.lwjgl.glfw.GLFW.glfwShowWindow;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
@@ -125,20 +126,37 @@ public class Window {
         glViewport(0, 0, width, height);
         
         glEnable(GL_BLEND);
-
+        
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         
         shader = new Shader("shaders/vertex.glsl", "shaders/fragment.glsl");
-
-        projection = new Matrix4f().ortho(0f, width, height, 0f, -1f, 1f);
-
+        
+        projection = new Matrix4f().ortho(0, width, height, 0 , -1f, 1f);
+        
         renderer = new Renderer(shader, projection);
+
+        glfwSetFramebufferSizeCallback(window, (window, w, h) -> {
+            width = w;
+            height = h;
+
+            glViewport(0, 0, w, h);
+
+            projection = new Matrix4f()
+            .ortho(0f, w, h, 0f, -1f, 1f);
+
+            renderer.setProjection(
+                projection
+            );
+        });
 
         playerTexture = new Texture("src/main/resources/textures/heart.png");
 
         tileTexture = new Texture("src/main/resources/textures/grassTile.png");
 
         camera = new Camera2D();
+
+        input = new Input();
 
         input.init(window);
 
@@ -148,10 +166,10 @@ public class Window {
 
    
 
-        map = new TileMap(20, 12, 64, quad, shader);
+        map = new TileMap(30,   16, 64, quad, shader);
 
-        for (int y = 0; y < 12; y++) {
-            for (int x = 0; x < 20; x++) {
+        for (int y = 0; y < 16; y++) {
+            for (int x = 0; x < 30; x++) {
                 map.setTile(x, y, grass);
             }
         }   

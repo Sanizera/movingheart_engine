@@ -13,7 +13,6 @@ public class Renderer {
 
     public Renderer(Shader shader, Matrix4f projection){
         this.shader = shader;
-
         this.projection = projection;
     }
 
@@ -29,6 +28,8 @@ public class Renderer {
         shader.setMat4("view", camera.getViewMatrix());
 
     }
-
+    public void setProjection(Matrix4f projection){
+        this.projection = projection;
+    }
     public void end(){}
 }
