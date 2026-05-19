@@ -1,4 +1,4 @@
-package com.game.objects;
+package com.game.input;
 
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.glfwGetKey;

@@ -33,9 +33,4 @@ public class GameObject {
         }
     }
 
-    public void render(){
-        for(Component c : components){
-            c.render();
-        }
-    }
 }

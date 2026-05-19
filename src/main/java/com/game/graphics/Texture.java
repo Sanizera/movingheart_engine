@@ -19,8 +19,10 @@ import org.lwjgl.system.MemoryStack;
 public class Texture {
     private int id;
 
-    public Texture(String path){
+    public Texture(String texture){
 
+        String path = "src/main/resources/textures/" + texture;
+        
         id = glGenTextures();
         
         glBindTexture(GL_TEXTURE_2D, id);
